@@ -2,6 +2,9 @@
 
 Projeto de análise de dados urbanos focado em restaurantes de Recife.
 
+## Objetivo
+Analisar padrões entre preço, avaliação e localização para apoiar decisões baseadas em dados.
+
 ## Tecnologias
 - Python
 - Pandas
