@@ -1,4 +1,7 @@
 # 📊 Urban Intelligence – Análise de Restaurantes em Recife
+![Python](https://img.shields.io/badge/Python-3.10-blue)
+![Streamlit](https://img.shields.io/badge/Streamlit-Dashboard-red)
+![Status](https://img.shields.io/badge/status-ativo-success)
 
 Projeto de análise de dados urbanos com foco na identificação de padrões entre preço, localização e avaliação de restaurantes na cidade do Recife.
 
@@ -72,7 +75,15 @@ Google Places API → Python → Pandas → CSV → Streamlit Dashboard
 - Análise de distribuição  
 - Score de custo-benefício
   
-📷 Demonstração [Urban Intelligence Dashboard.pdf](https://github.com/user-attachments/files/26761126/Urban.Intelligence.Dashboard.pdf)
+📷 Veja o funcionamento do sistema abaixo:
+[Urban Intelligence Dashboard.pdf](https://github.com/user-attachments/files/26761126/Urban.Intelligence.Dashboard.pdf)
+### 📊 Dashboard
+
+![Dashboard](./assets/dashboard.png)
+
+### 🗺️ Mapa Interativo
+
+![Mapa](./assets/mapa.png)
 
 
 ---
@@ -84,6 +95,7 @@ urban-intelligence/
 ├── app/
 ├── data/
 │ └── places_recife_real.csv
+├── assets/ 
 ├── dashboard_app.py
 ├── fetch_places_new.py
 ├── requirements.txt
@@ -105,14 +117,40 @@ GOOGLE_MAPS_API_KEY=SUA_CHAVE_AQUI
 ```
 
 ## ▶️ Como Executar o Projeto
+```bash
+# Clonar repositório
+git clone https://github.com/seuusuario/seurepo.git
+
+# Entrar na pasta
+cd urban-intelligence
+
+# Instalar dependências
+pip install -r requirements.txt
+
+# Rodar aplicação
+streamlit run dashboard_app.py
 
 1. Instalar dependências
 ```bash
 pip install -r requirements.txt
 ```
-2. Rodar o dashboard
-streamlit run dashboard_app.py
+```markdown
+## 🧪 Exemplo de Uso
+
+O usuário pode:
+
+- Filtrar restaurantes por preço e avaliação
+- Visualizar distribuição geográfica
+- Identificar melhor custo-benefício
 ---
+## 📚 Aprendizados
+
+- Integração com APIs reais
+- Limpeza e tratamento de dados
+- Visualização com Streamlit
+- Aplicação de CRISP-D
+---
+
 ## 📊 Fluxo do Sistema
 Coleta via API
 Tratamento com Pandas
@@ -131,6 +169,7 @@ Melhor custo-benefício em preços intermediários
 Localização não garante qualidade
 Dados ajudam decisões mais eficientes
 ---
+
 ## 📈 Conclusão
 
 O projeto demonstra como dados urbanos podem ser transformados em inteligência aplicada, auxiliando na tomada de decisão e melhorando a experiência do usuário.
