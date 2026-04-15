@@ -72,7 +72,8 @@ Google Places API → Python → Pandas → CSV → Streamlit Dashboard
 - Análise de distribuição  
 - Score de custo-benefício
   
-📷 Demonstração [Análise de Restaurantes em Recife (10).pdf](https://github.com/user-attachments/files/26761070/Analise.de.Restaurantes.em.Recife.10.pdf)
+📷 Demonstração [Urban Intelligence Dashboard.pdf](https://github.com/user-attachments/files/26761126/Urban.Intelligence.Dashboard.pdf)
+
 
 ---
 
