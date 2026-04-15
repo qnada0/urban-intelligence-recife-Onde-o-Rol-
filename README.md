@@ -70,7 +70,9 @@ Google Places API → Python → Pandas → CSV → Streamlit Dashboard
 - Filtros por preço e avaliação  
 - Mapa geográfico  
 - Análise de distribuição  
-- Score de custo-benefício  
+- Score de custo-benefício
+  
+📷 Demonstração [Análise de Restaurantes em Recife (10).pdf](https://github.com/user-attachments/files/26761070/Analise.de.Restaurantes.em.Recife.10.pdf)
 
 ---
 
