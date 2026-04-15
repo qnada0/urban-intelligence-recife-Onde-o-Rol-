@@ -15,11 +15,11 @@ Com múltiplas opções disponíveis, usuários enfrentam dificuldade em identif
 
 Desenvolver uma análise de dados capaz de identificar padrões entre:
 
-- 💰 Preço
-- 📍 Localização
-- ⭐ Avaliação
+- 💰 Preço  
+- 📍 Localização  
+- ⭐ Avaliação  
 
-Com o objetivo de apoiar decisões mais inteligentes na escolha de restaurantes.
+Apoiando decisões mais inteligentes na escolha de restaurantes.
 
 ---
 
@@ -28,44 +28,106 @@ Com o objetivo de apoiar decisões mais inteligentes na escolha de restaurantes.
 O projeto segue a metodologia CRISP-DM:
 
 1. **Business Understanding**  
-   Definição do problema: melhorar a tomada de decisão na escolha de restaurantes.
+   Definição do problema
 
 2. **Data Understanding**  
-   Coleta de dados via Google Places API.
+   Coleta via Google Places API
 
 3. **Data Preparation**  
-   Limpeza e estruturação dos dados com Pandas.
+   Limpeza com Pandas
 
 4. **Modeling**  
-   Criação de métricas como score de custo-benefício.
+   Criação de métricas (custo-benefício)
 
 5. **Evaluation**  
-   Análise exploratória dos dados (EDA).
+   Análise exploratória
 
 6. **Deployment**  
-   Visualização via dashboard interativo com Streamlit.
+   Dashboard com Streamlit
 
 ---
 
 ## 🏗️ Arquitetura do Projeto
+Google Places API → Python → Pandas → CSV → Streamlit Dashboard
 
 
-## Objetivo
-Analisar padrões entre preço, avaliação e localização para apoiar decisões baseadas em dados.
+---
 
-## Tecnologias
-- Python
-- Pandas
-- Streamlit
-- Google Places API
+## 🛠️ Tecnologias Utilizadas
 
-## Funcionalidades
-- Dashboard interativo
-- Mapa de restaurantes
-- Análise de custo-benefício
+- Python  
+- Pandas  
+- Streamlit  
+- Google Places API  
+- Requests  
+- Python-dotenv  
 
-## Como rodar
+---
 
+## ⚙️ Funcionalidades
+
+- Dashboard interativo  
+- Filtros por preço e avaliação  
+- Mapa geográfico  
+- Análise de distribuição  
+- Score de custo-benefício  
+
+---
+
+## 📂 Estrutura do Projeto
 ```bash
-streamlit run dashboard_app.py
+urban-intelligence/
+│
+├── app/
+├── data/
+│ └── places_recife_real.csv
+├── dashboard_app.py
+├── fetch_places_new.py
+├── requirements.txt
+├── .env.example
+├── .gitignore
+└── README.md
+...
+```
 
+
+---
+
+## 🔑 Configuração da API
+
+Crie um arquivo `.env`:
+
+```env
+GOOGLE_MAPS_API_KEY=SUA_CHAVE_AQUI
+```
+
+## ▶️ Como Executar o Projeto
+
+1. Instalar dependências
+```bash
+pip install -r requirements.txt
+```
+2. Rodar o dashboard
+streamlit run dashboard_app.py
+---
+## 📊 Fluxo do Sistema
+Coleta via API
+Tratamento com Pandas
+Geração do dataset
+Visualização no dashboard
+---
+## ⚠️ Limitações
+Dependência da API do Google
+Avaliações subjetivas
+Dados dinâmicos
+Recorte geográfico limitado
+---
+## 📌 Principais Insights
+Preço alto ≠ melhor avaliação
+Melhor custo-benefício em preços intermediários
+Localização não garante qualidade
+Dados ajudam decisões mais eficientes
+---
+## 📈 Conclusão
+
+O projeto demonstra como dados urbanos podem ser transformados em inteligência aplicada, auxiliando na tomada de decisão e melhorando a experiência do usuário.
