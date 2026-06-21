@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, Text
+from sqlalchemy import Column, Integer, String, Float
 from .database import Base
 
 
@@ -20,12 +20,9 @@ class Place(Base):
     name = Column(String(150), nullable=False)
     category = Column(String(50), nullable=False)
     subcategory = Column(String(50), nullable=True)
-    description = Column(Text, nullable=True)
     neighborhood = Column(String(100), nullable=True)
-    city = Column(String(100), nullable=False)
     latitude = Column(Float, nullable=True)
     longitude = Column(Float, nullable=True)
     average_price_level = Column(Integer, nullable=True)
     average_rating = Column(Float, nullable=True)
-    total_reviews = Column(Integer, nullable=True)
-    source = Column(String(50), nullable=True)
+    photo_url = Column(String(500), nullable=True)

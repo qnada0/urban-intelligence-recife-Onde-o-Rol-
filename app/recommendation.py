@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
 from math import radians, sin, cos, sqrt, atan2
 
 
@@ -18,12 +18,12 @@ class PlaceData:
     name: str
     category: str
     subcategory: str
-    description: str
     neighborhood: str
     average_price_level: int
     average_rating: float
     latitude: float
     longitude: float
+    photo_url: Optional[str] = None
 
 
 def calculate_distance_km(user_lat, user_lon, place_lat, place_lon):
@@ -150,14 +150,16 @@ def recommend_places(user: UserProfile, places: List[PlaceData], top_n: int = 5)
                 "name": place.name,
                 "category": place.category,
                 "subcategory": place.subcategory,
-                "description": place.description,
                 "neighborhood": place.neighborhood,
                 "score": score,
                 "match_level": get_match_level(score),
                 "rating": place.average_rating,
                 "price_level": place.average_price_level,
+                "lat": place.latitude,
+                "lon": place.longitude,
                 "distance_km": distance_km,
                 "reason": build_reason(user, place, distance_km, score),
+                "photo_url": place.photo_url,
             }
         )
 

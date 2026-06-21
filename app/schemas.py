@@ -21,15 +21,12 @@ class PlaceCreate(BaseModel):
     name: str
     category: str
     subcategory: Optional[str] = None
-    description: Optional[str] = None
     neighborhood: Optional[str] = None
-    city: str
     latitude: Optional[float] = None
     longitude: Optional[float] = None
     average_price_level: Optional[int] = None
     average_rating: Optional[float] = None
-    total_reviews: Optional[int] = None
-    source: Optional[str] = None
+    photo_url: Optional[str] = None
 
 
 class PlaceResponse(PlaceCreate):
@@ -45,4 +42,4 @@ class RecommendationRequest(BaseModel):
     budget_preference: int
     user_latitude: float
     user_longitude: float
-    city: str
+    city: Optional[str] = "Recife"

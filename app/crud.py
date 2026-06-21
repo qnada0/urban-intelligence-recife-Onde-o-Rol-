@@ -22,5 +22,10 @@ def create_place(db: Session, place: schemas.PlaceCreate):
     return db_place
 
 
-def get_places_by_city(db: Session, city: str):
-    return db.query(models.Place).filter(models.Place.city == city).all()
+def get_all_places(db: Session):
+    """
+    Retorna todos os lugares cadastrados.
+    A tabela 'places' não tem coluna 'city' — o dataset inteiro já é de
+    Recife, então não há necessidade de filtrar por cidade aqui.
+    """
+    return db.query(models.Place).all()
