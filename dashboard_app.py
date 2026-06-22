@@ -16,9 +16,9 @@ from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 
 load_dotenv()
-DATABASE_URL        = os.getenv("DATABASE_URL")
-WEATHER_API_KEY     = os.getenv("WEATHER_API_KEY", "")
-GOOGLE_MAPS_API_KEY = os.getenv("GOOGLE_MAPS_API_KEY", "")
+DATABASE_URL        = os.getenv("DATABASE_URL") or st.secrets.get("DATABASE_URL","")
+WEATHER_API_KEY     = os.getenv("WEATHER_API_KEY","") or st.secrets.get("WEATHER_API_KEY","")
+GOOGLE_MAPS_API_KEY = os.getenv("GOOGLE_MAPS_API_KEY","") or st.secrets.get("GOOGLE_MAPS_API_KEY","")
 
 # ══════════════════════════════════════════
 #  PAGE CONFIG
