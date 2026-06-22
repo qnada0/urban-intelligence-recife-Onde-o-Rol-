@@ -1,0 +1,14 @@
+streamlit
+pandas
+numpy
+requests
+folium
+streamlit-folium
+plotly
+SQLAlchemy
+python-dotenv
+psycopg2-binary
+scikit-learn
+fastapi
+uvicorn
+pydantic

@@ -12,6 +12,8 @@ from folium.plugins import MarkerCluster
 from sqlalchemy import create_engine
 from dotenv import load_dotenv
 from explorar_page import render_explorar
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
 
 load_dotenv()
 DATABASE_URL        = os.getenv("DATABASE_URL")
@@ -1051,6 +1053,102 @@ elif page=="analise":
   ⚠️ {bairro_esparsos} bairro(s) têm menos de 10 lugares coletados nos filtros atuais — a média de avaliação
   desses bairros é estatisticamente menos confiável do que a de bairros com mais dados.
 </div>""",unsafe_allow_html=True)
+
+    st.markdown("<br><br>",unsafe_allow_html=True)
+
+    # ══════════════════════════════════════════
+    #  CLUSTERIZAÇÃO DE BAIRROS (K-Means)
+    # ══════════════════════════════════════════
+    st.markdown("""
+<div style="color:#94a3b8;font-size:11px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:10px;">
+  🧩 CLUSTERIZAÇÃO DE BAIRROS
+  <span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(139,92,246,0.4),transparent);"></span>
+</div>""",unsafe_allow_html=True)
+    st.caption("Agrupamento por K-Means com base em preço médio, avaliação média e mix de categorias de cada bairro.")
+    st.markdown("<br>",unsafe_allow_html=True)
+
+    neigh_profile=(filtered_df.groupby("neighborhood")
+                   .agg(avg_price=("average_price_level","mean"),
+                        avg_rating=("average_rating","mean"),
+                        total=("name","count")).reset_index())
+
+    cat_counts=filtered_df.pivot_table(index="neighborhood",columns="category",
+                                        values="id",aggfunc="count",fill_value=0)
+    cat_pct=cat_counts.div(cat_counts.sum(axis=1),axis=0)
+    cat_pct.columns=[f"pct_{c}" for c in cat_pct.columns]
+    neigh_profile=neigh_profile.merge(cat_pct.reset_index(),on="neighborhood",how="left").fillna(0)
+
+    n_bairros=len(neigh_profile)
+
+    if n_bairros<4:
+        st.info("Poucos bairros nos filtros atuais para agrupar com confiança — amplie os filtros para ver a clusterização.")
+    else:
+        max_k=min(6,n_bairros-1)
+        default_k=min(4,max_k)
+        k=st.slider("Número de grupos (K)",2,max_k,default_k,key="cluster_k")
+
+        pct_cols=[c for c in neigh_profile.columns if c.startswith("pct_")]
+        feature_cols=["avg_price","avg_rating"]+pct_cols
+        X=neigh_profile[feature_cols].values
+        X_scaled=StandardScaler().fit_transform(X)
+
+        km=KMeans(n_clusters=k,random_state=42,n_init=10)
+        neigh_profile["cluster"]=km.fit_predict(X_scaled).astype(str)
+
+        overall_price=neigh_profile["avg_price"].mean()
+        overall_rating=neigh_profile["avg_rating"].mean()
+
+        def label_cluster(row):
+            parts=[]
+            parts.append("preço elevado" if row["avg_price"]>overall_price else "preço acessível")
+            parts.append("bem avaliado" if row["avg_rating"]>overall_rating else "avaliação mediana")
+            if pct_cols:
+                dom=max(pct_cols,key=lambda c:row.get(c,0))
+                parts.append(f"foco em {dom.replace('pct_','')}")
+            return ", ".join(parts).capitalize()
+
+        cluster_means=neigh_profile.groupby("cluster")[feature_cols].mean()
+        cluster_labels={c:label_cluster(cluster_means.loc[c]) for c in cluster_means.index}
+        neigh_profile["cluster_label"]=neigh_profile["cluster"].map(cluster_labels)
+
+        cl_colors=["#6366f1","#22c55e","#f59e0b","#ef4444","#06b6d4","#ec4899"]
+        color_map={str(i):cl_colors[i%len(cl_colors)] for i in range(k)}
+
+        clc1,clc2=st.columns([1.3,1])
+
+        with clc1:
+            fig9=px.scatter(neigh_profile,x="avg_price",y="avg_rating",
+                            color="cluster",color_discrete_map=color_map,
+                            size="total",size_max=28,hover_name="neighborhood",
+                            hover_data={"cluster":False,"total":True})
+            fig9.update_traces(marker=dict(line=dict(width=1,color="rgba(255,255,255,0.3)")))
+            fig9.update_layout(**PLOT_BASE,height=380,showlegend=False,
+                xaxis=dict(**XAXIS_BASE,title="Preço médio"),
+                yaxis=dict(**YAXIS_BASE,title="Avaliação média"),
+                title=dict(text="Bairros agrupados por perfil",font=dict(color="white",size=14,family="Inter"),x=0),
+                margin=dict(t=48,b=40,l=48,r=24))
+            def _f9(): st.plotly_chart(fig9,use_container_width=True)
+            cc(_f9)
+
+        with clc2:
+            def _f10():
+                st.markdown("<div style='padding:14px 16px 6px;'>",unsafe_allow_html=True)
+                st.markdown("<div style='color:white;font-size:14px;font-weight:700;margin-bottom:12px;'>"
+                            "Grupos encontrados</div>",unsafe_allow_html=True)
+                for c in sorted(neigh_profile["cluster"].unique(),key=int):
+                    bairros_c=neigh_profile[neigh_profile["cluster"]==c]["neighborhood"].tolist()
+                    color=color_map[c]
+                    st.markdown(f"""
+<div style="margin-bottom:14px;">
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+    <div style="width:10px;height:10px;border-radius:50%;background:{color};flex-shrink:0;"></div>
+    <div style="color:white;font-size:13px;font-weight:700;">{cluster_labels[c]}</div>
+  </div>
+  <div style="color:#94a3b8;font-size:12px;padding-left:18px;">{", ".join(bairros_c)}</div>
+</div>""",unsafe_allow_html=True)
+                st.markdown("</div>",unsafe_allow_html=True)
+            cc(_f10)
 
 
 
