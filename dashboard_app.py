@@ -344,8 +344,13 @@ if not DATABASE_URL:
     st.error("DATABASE_URL não encontrada no .env")
     st.stop()
 
-_db_url = DATABASE_URL + ("?sslmode=require" if DATABASE_URL and "sslmode" not in DATABASE_URL else "")
-engine = create_engine(_db_url)
+# Remove sslmode da URL se existir (vamos passar via connect_args)
+_db_url = DATABASE_URL.split("?")[0] if DATABASE_URL else ""
+engine = create_engine(
+    _db_url,
+    connect_args={"sslmode": "require"},
+    pool_pre_ping=True,
+)
 
 @st.cache_data
 def load_places():
