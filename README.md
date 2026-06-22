@@ -75,8 +75,7 @@ Google Places API → Python → Pandas → CSV → Streamlit Dashboard
 - Análise de distribuição  
 - Score de custo-benefício
   
-📷 Veja o funcionamento do sistema abaixo:
-[Urban Intelligence Dashboard.pdf](https://github.com/user-attachments/files/26761126/Urban.Intelligence.Dashboard.pdf)
+
 ### 📊 Dashboard
 
 ![Dashboard](./assets/dashboard.png)
