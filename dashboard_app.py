@@ -354,7 +354,20 @@ engine = create_engine(
 
 @st.cache_data
 def load_places():
-    return pd.read_sql("SELECT * FROM places", engine)
+    # Tenta banco primeiro, cai no CSV se falhar
+    try:
+        df = pd.read_sql("SELECT * FROM places", engine)
+        if not df.empty:
+            return df
+    except Exception:
+        pass
+    # Fallback: carrega do CSV que está no repositório
+    try:
+        df = pd.read_csv("places_recife_real.csv")
+        return df
+    except Exception as e:
+        st.error(f"Não foi possível carregar os dados: {e}")
+        st.stop()
 
 df_places = load_places()
 if df_places.empty:
