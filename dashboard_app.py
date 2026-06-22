@@ -1179,15 +1179,48 @@ elif page=="recomendacoes":
         if submitted:
             st.session_state.user_lat=ulat; st.session_state.user_lon=ulon; st.session_state.searched=True
             try:
-                resp=requests.post("http://127.0.0.1:8000/recommendations/",
-                    json={"preferred_category":pref_cat,"preferred_subcategory":pref_sub,
-                          "budget_preference":budget,"user_latitude":ulat,"user_longitude":ulon,"city":city},timeout=10)
-                if resp.status_code==200:
-                    st.session_state.recommendations=resp.json()
-                    if not st.session_state.recommendations: st.warning("Nenhuma recomendação encontrada.")
-                else: st.error(f"Erro na API: {resp.status_code}")
-            except requests.exceptions.ConnectionError: st.error("FastAPI offline. Rode: uvicorn main:app --reload")
-            except Exception as e: st.error(f"Erro: {e}")
+                candidates=df_places[df_places["category"]==pref_cat].copy()
+                if candidates.empty:
+                    st.session_state.recommendations=[]
+                else:
+                    def _score(row):
+                        rating=float(row.get("average_rating") or 0)
+                        rating_pts=(rating/5)*40
+                        price=int(row.get("average_price_level") or 2)
+                        price_pts={0:30,1:18,2:8}.get(abs(price-budget),0)
+                        try:
+                            dist_km=haversine(ulat,ulon,float(row["latitude"]),float(row["longitude"]))
+                        except Exception:
+                            dist_km=99
+                        dist_pts=max(0,20-dist_km)
+                        sub=str(row.get("subcategory","")).lower().strip()
+                        psub=str(pref_sub).lower().strip()
+                        sub_pts=10 if sub==psub else (5 if (psub in sub or sub in psub) else 0)
+                        total=rating_pts+price_pts+dist_pts+sub_pts
+                        reasons=[]
+                        if rating>=4.5: reasons.append("possui boa avaliação dos usuários")
+                        if dist_km<=5: reasons.append("está perto da sua localização")
+                        if abs(price-budget)==0: reasons.append("está dentro do seu orçamento")
+                        if sub_pts>0: reasons.append(f"tem o estilo que você procura ({row.get('subcategory','')})")
+                        reason=("Recomendado porque "+", ".join(reasons)+".") if reasons else "Recomendado com base no equilíbrio entre perfil, localização e avaliação."
+                        return {
+                            "id":int(row["id"]),"name":row["name"],
+                            "category":row["category"],"subcategory":row.get("subcategory"),
+                            "neighborhood":row.get("neighborhood",""),
+                            "rating":rating,"price_level":price,
+                            "lat":float(row["latitude"]),"lon":float(row["longitude"]),
+                            "distance_km":dist_km,
+                            "score":round(total/10,2),
+                            "reason":reason,
+                            "photo_url":row.get("photo_url"),
+                        }
+                    results=[_score(r) for _,r in candidates.iterrows()]
+                    results.sort(key=lambda x:x["score"],reverse=True)
+                    st.session_state.recommendations=results[:5]
+                    if not st.session_state.recommendations:
+                        st.warning("Nenhuma recomendação encontrada.")
+            except Exception as e:
+                st.error(f"Erro ao calcular recomendações: {e}")
 
     with result_col:
         if st.session_state.searched and st.session_state.recommendations:
